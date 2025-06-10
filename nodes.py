@@ -157,6 +157,9 @@ class ConditionalTask(Node):
 
 class TasksAdded(Node):
     def evaluate(self, st):
+        for child in self.children:
+            child.evaluate(st)
+
         if 'tasks' in st.st:
             tasks = st.get("tasks")[1]
             for participant in tasks.keys():
