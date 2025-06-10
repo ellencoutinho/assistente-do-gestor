@@ -11,8 +11,4 @@ participantes adicionados
 definir tarefas
 "Ellen" fará "Rotacao do personagem" até 22/01/2024
 "Ellen" fará "Animacao de personagem andando"
-
-se "Carlos".qtd_tarefas < 2 então "Carlos" fará "Documentar logica da animacao"
-senão "Carlos" fará "Encontrar arquivos" até prazo_padrao
-
 tarefas adicionadas
