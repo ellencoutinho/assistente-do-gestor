@@ -34,7 +34,6 @@ class Tokenizer:
         for phrase, token_type in reserved_phrases.items():
             if self.source.startswith(phrase, self.position):
                 self.position += len(phrase)
-                print(f'gera next token {token_type} na frase {phrase} e position {self.position}')
                 self.next = Token(token_type, None)
                 return
 
@@ -122,5 +121,4 @@ class Tokenizer:
             self.next = Token('break_line', None)
             return
 
-        print(f'next token {self.next}')
         raise Exception(f"Unknown token starting with '{current_char}' at position {self.position}")

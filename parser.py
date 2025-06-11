@@ -14,7 +14,6 @@ class Parser:
 
     @staticmethod
     def parseFactor():
-        print(f'entra em parse factor com next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
         if Parser.tokenizer.next.type == 'string':
             value = Parser.tokenizer.next.value
             Parser.tokenizer.selectNext()
@@ -46,7 +45,6 @@ class Parser:
     
     @staticmethod
     def parseRelExpression():
-        print('chama parsefactor')
         left = Parser.parseFactor()
         if Parser.tokenizer.next.type in ['less_than', 'greater_than', 'less_equal', 'greater_equal', 'equals']:
             op = Parser.tokenizer.next.type
@@ -70,17 +68,14 @@ class Parser:
                     if Parser.tokenizer.next.type == 'assignment':
                         Parser.tokenizer.selectNext()
                         value = Parser.parseFactor()
-                        print("atribui experiencia")
                         return VarDec(value=var_name, children=[f"{participant}.{var_name}", value])
         
         elif Parser.tokenizer.next.type == 'identifier':
             var_name = Parser.tokenizer.next.value
-            print(f"enxerga variavel criada {var_name}")
             Parser.tokenizer.selectNext()
             if Parser.tokenizer.next.type == 'assignment':
                 Parser.tokenizer.selectNext()
                 value = Parser.parseFactor()
-                print(f"atribui valor {value}")
                 return VarDec(value="var", children=[var_name, value])
         
         raise Exception(f"Invalid variable declaration. Unexpected token: {Parser.tokenizer.next.type}")
@@ -97,19 +92,14 @@ class Parser:
     def parseTask():
         if Parser.tokenizer.next.type == 'string':
             participant = Parser.tokenizer.next.value
-            print(f'definiu participante {participant}')
             Parser.tokenizer.selectNext()
-            print(f'next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
             if Parser.tokenizer.next.type == 'will_do':
-                print('if 1')
                 Parser.tokenizer.selectNext()
                 if Parser.tokenizer.next.type == 'string':
-                    print('if 2')
                     task = Parser.tokenizer.next.value
                     Parser.tokenizer.selectNext()
                     deadline_node = None
                     if Parser.tokenizer.next.type == 'until':
-                        print('if 3')
                         Parser.tokenizer.selectNext()
                         tok_type = Parser.tokenizer.next.type
                         tok_val  = Parser.tokenizer.next.value
@@ -129,16 +119,10 @@ class Parser:
     @staticmethod
     def parseConditionalTask():
         Parser.tokenizer.selectNext()  # skip 'se'
-        print(f"next {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
         condition = Parser.parseRelExpression()
-        print(f'encontrei a condition {condition}')
-        print(condition.children, condition.value)
         Parser.tokenizer.selectNext()  # skip 'então'
-        print(f"next para entrar em then {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
         then_task = Parser.parseTask()
-        print(f'voltei com a task next {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}')
         Parser.tokenizer.selectNext() # break line
-        print(f"novo next é  {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
 
         else_task = None
         if Parser.tokenizer.next.type == 'else':
@@ -170,17 +154,12 @@ class Parser:
                             participants.append(Parser.parseParticipant())
                             Parser.tokenizer.selectNext()
                         # token participantes adicionados
-                        print('adicionou participantes')
-                        print(f'oooo {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
                         if Parser.tokenizer.next.type == 'participants_added':
-                            print(f'next é {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
                             Parser.tokenizer.selectNext()
-                            print(f'next do next é {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
 
                             # consome quebra de linha após participantes adicionados
                             if Parser.tokenizer.next.type == 'break_line':
                                 Parser.tokenizer.selectNext()
-                                print(f'deixou com o next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
                             # retorna array com declarações e nó de finalização
                             return Block(value=None,
                                          children=participants + [ParticipantsAdded(value=None, children=[])])
@@ -191,26 +170,18 @@ class Parser:
 
         # "definir tarefas"
         elif Parser.tokenizer.next.type == 'define_tasks':
-            print("entrou em definir tarefas")
             Parser.tokenizer.selectNext()
             # consome quebra de linha após "definir tarefas"
             if Parser.tokenizer.next.type == 'break_line':
                 Parser.tokenizer.selectNext()
-            print('hora de definir as tasks')
-            print(f'o next é {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
             tasks = []
             while Parser.tokenizer.next.type in ['string', 'if']:
                 if Parser.tokenizer.next.type == 'string':
-                    print('vou chamar parseTask')
                     tasks.append(Parser.parseTask())
                     Parser.tokenizer.selectNext()
-                    print('adicionei uma task')
-                    print(f'next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
                 else:
-                    print('quero adicionar task condicional')
                     tasks.append(Parser.parseConditionalTask())
             
-            print(f'saindo do while com next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
             Parser.tokenizer.selectNext()
 
             if Parser.tokenizer.next.type == 'tasks_added':
@@ -238,7 +209,6 @@ class Parser:
     @staticmethod
     def run(code):
         processed_code = PrePro.filter(code)
-        print(f'processed code {processed_code}')
         Parser.tokenizer = Tokenizer(processed_code)
         Parser.tokenizer.selectNext()
 
