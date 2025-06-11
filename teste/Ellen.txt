@@ -1,0 +1,12 @@
+Olá Ellen,
+
+Esta mensagem traz as suas tarefas e prazos no projeto "Jogos". Por favor, avalie se terá disponibilidade para lidar com os entregáveis abaixo no prazo proposto. Caso haja algum problema, fale com seu gestor.
+
+Entregáveis:
+1. Rotacao do personagem até 22/01/2024
+2. Animacao de personagem andando (sem prazo definido)
+
+Colegas de projeto: Carlos (1 tarefa atribuída).
+
+Atenciosamente,
+Equipe de Gestão de Projetos

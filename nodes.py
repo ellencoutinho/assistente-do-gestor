@@ -207,12 +207,15 @@ class TasksAdded(Node):
                 "",
                 "Entregáveis:"
             ]
-            
-            for i, (task, deadline) in enumerate(participant_tasks, 1):
-                if deadline:
-                    content.append(f"{i}. {task} até {deadline}")
-                else:
-                    content.append(f"{i}. {task} (sem prazo definido)")
+
+            if participant_tasks:
+                for i, (task, deadline) in enumerate(participant_tasks, 1):
+                    if deadline:
+                        content.append(f"{i}. {task} até {deadline}")
+                    else:
+                        content.append(f"{i}. {task} (sem prazo definido)")
+            else:
+                content.append("Você não possui tarefas diretamente atribuídas a você.")    
             
             content.extend([
                 "",

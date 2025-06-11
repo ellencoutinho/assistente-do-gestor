@@ -1,8 +1,50 @@
-# assistente-do-gestor
+# Assistente do Gestor
 Linguagem de programação criada com o intuito de permitir que gestores atribuam tarefas à participantes de um projeto e gerem mensagens automáticas especificando-as a cada participante.
 
 #### Funcionamento
 A linguagem possibilita atribuir um nome ao projeto, lista de pessoas envolvidas, valores globais ou atributos associados a participantes, atribuição de tarefas (opcionalmente com prazos) e condicionais (lógica simples para alocar tarefas com base em quantidade de tarefas de cada participante ou outros atributos). O compilador validará o programa de entrada e gerará arquivos de saída (<Participante>.txt), um para cada participante, contendo um e‑mail explicando as tarefas e prazos.
+
+Uma curiosidade é que o atributo *qtd_tarefas* é próprio da classe de participante, o que implica em ele sempre poder ser acessado.
+
+#### Exemplo de código de entrada
+```python
+definir prazo_padrao = "30 dias"
+definir "Ellen".experiencia = "Alta"
+
+iniciar projeto Jogos
+
+definir participantes do projeto Jogos
+"Ellen"
+"Carlos"
+participantes adicionados
+
+definir tarefas
+"Ellen" fará "Rotação do personagem" até 22/01/2024
+"Ellen" fará "Animação de personagem andando"
+
+se "Carlos".qtd_tarefas < 2 então "Carlos" fará "Documentar lógica da animação"
+senão "Carlos" fará "Encontrar arquivos" até prazo_padrao
+
+tarefas adicionadas
+```
+
+#### Exemplo de arquivo gerado (Ellen.txt)
+``` 
+Olá Ellen,
+
+Esta mensagem traz as suas tarefas e prazos no projeto "Jogos". Por favor, avalie se terá disponibilidade para lidar com os entregáveis abaixo no prazo proposto. Caso haja algum problema, fale com seu gestor.
+
+Entregáveis:
+1. Rotação do personagem até 22/01/2024
+2. Animação de personagem andando (sem prazo definido)
+
+Colegas de projeto: Carlos (1 tarefa atribuída).
+
+Atenciosamente,
+Equipe de Gestão de Projetos
+```
+
+Esse exemplo foi testado e seu arquivo está contido na pasta "teste", junto dos arquivos de output.
 
 #### EBNF
 ```ebnf
@@ -62,40 +104,4 @@ LETRA = ( "a" | ... | "z" | "A" | ... | "Z" ) ;
 DIGITO = ( "0" | "1" | ... | "9" ) ;
 ```
 
-#### Exemplo de código de entrada
-```python
-definir prazo_padrao = "30 dias"
-definir "Ellen".experiencia = "Alta"
 
-iniciar projeto Jogos
-
-definir participantes do projeto Jogos
-"Ellen"
-"Carlos"
-participantes adicionados
-
-definir tarefas
-"Ellen" fará "Rotação do personagem" até 22/01/2024
-"Ellen" fará "Animação de personagem andando"
-
-se "Carlos".qtd_tarefas < 2 então "Carlos" fará "Documentar lógica da animação"
-senão "Carlos" fará "Encontrar arquivos" até prazo_padrao
-
-tarefas adicionadas
-```
-
-#### Exemplo de arquivo gerado (Ellen.txt)
-``` 
-Olá Ellen,
-
-Esta mensagem traz as suas tarefas e prazos no projeto "Jogos". Por favor, avalie se terá disponibilidade para lidar com os entregáveis abaixo no prazo proposto. Caso haja algum problema, fale com seu gestor.
-
-Entregáveis:
-1. Rotação do personagem até 22/01/2024
-2. Animação de personagem andando (sem prazo definido)
-
-Colegas de projeto: Carlos (1 tarefa atribuída).
-
-Atenciosamente,
-Equipe de Gestão de Projetos
-```
