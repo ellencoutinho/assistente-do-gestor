@@ -139,6 +139,13 @@ class TaskDeclaration(Node):
         task = self.children[1].value
         deadline = self.children[2].value if len(self.children) > 2 else None
         
+        # avalia o nó de deadline (se existir)
+        if len(self.children) > 2:
+            deadline_type, deadline_val = self.children[2].evaluate(st)
+            deadline = deadline_val
+        else:
+            deadline = None
+
         if "tasks" not in st.st:
             st.set(key="tasks", type="dict", value={}, shift=None)
         

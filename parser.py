@@ -107,23 +107,23 @@ class Parser:
                     print('if 2')
                     task = Parser.tokenizer.next.value
                     Parser.tokenizer.selectNext()
+                    deadline_node = None
                     if Parser.tokenizer.next.type == 'until':
                         print('if 3')
                         Parser.tokenizer.selectNext()
-                        if Parser.tokenizer.next.type in ['date', 'identifier']:
-                            print(f'if 4 {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
-                            deadline = Parser.tokenizer.next.value
-                            Parser.tokenizer.selectNext()
-                            print(f'next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
-                            return TaskDeclaration(value=None, children=[
-                                StrVal(participant),
-                                StrVal(task),
-                                StrVal(deadline) if Parser.tokenizer.next.type == 'date' else Identifier(deadline, [])
-                            ])
-                    return TaskDeclaration(value=None, children=[
-                        StrVal(participant),
-                        StrVal(task)
-                    ])
+                        tok_type = Parser.tokenizer.next.type
+                        tok_val  = Parser.tokenizer.next.value
+                        if tok_type == 'date':
+                            deadline_node = StrVal(tok_val)
+                        elif tok_type == 'identifier':
+                            deadline_node = Identifier(tok_val, [])
+                        else:
+                            raise Exception("Deadline inválido")
+                        Parser.tokenizer.selectNext()
+                    children = [StrVal(participant), StrVal(task)] 
+                    if deadline_node:
+                        children.append(deadline_node)    
+                    return TaskDeclaration(value=None, children=children)
         raise Exception("Invalid task declaration")
 
     @staticmethod
