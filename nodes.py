@@ -28,6 +28,14 @@ class StrVal(Node):
     def generate(self, st):
         pass
 
+class NumVal(Node):
+    def __init__(self, value):
+        super().__init__(value, [])
+    def evaluate(self, st):
+        return ("int", self.value) # Sempre int
+    def generate(self, st):
+        pass
+
 class BinOp(Node):
     def evaluate(self, st):
         type1, val1 = self.children[0].evaluate(st)

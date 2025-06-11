@@ -18,9 +18,9 @@ class Tokenizer:
             "tarefas adicionadas": "tasks_added",
             "fará": "will_do",
             "até": "until",
+            "senão": "else",
             "se": "if",
             "então": "then",
-            "senão": "else",
             "do projeto": "of_project"
         }
 
@@ -76,6 +76,15 @@ class Tokenizer:
             self.next = Token('identifier', identifier)
             return
 
+        if current_char.isdigit():
+            end_pos = self.position
+            while end_pos < len(self.source) and self.source[end_pos].isdigit():
+                end_pos += 1
+            number_str = self.source[self.position:end_pos]
+            self.position = end_pos
+            self.next = Token('number', int(number_str))
+            return
+
         if current_char == '=':
             if self.position + 1 < len(self.source) and self.source[self.position+1] == '=':
                 self.position += 2
@@ -101,11 +110,6 @@ class Tokenizer:
             else:
                 self.position += 1
                 self.next = Token('greater_than', None)
-            return
-
-        if current_char == '+':
-            self.position += 1
-            self.next = Token('plus', None)
             return
 
         if current_char == '.':

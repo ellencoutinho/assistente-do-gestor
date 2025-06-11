@@ -14,10 +14,25 @@ class Parser:
 
     @staticmethod
     def parseFactor():
+        print(f'entra em parse factor com next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
         if Parser.tokenizer.next.type == 'string':
-            tree = StrVal(value=Parser.tokenizer.next.value)
+            value = Parser.tokenizer.next.value
             Parser.tokenizer.selectNext()
-            return tree
+            # detecta acesso de propriedade:
+            if Parser.tokenizer.next.type == 'dot':
+                Parser.tokenizer.selectNext()
+                if Parser.tokenizer.next.type == 'identifier':
+                    prop = Parser.tokenizer.next.value
+                    Parser.tokenizer.selectNext()
+                    full = f"{value}.{prop}"
+                    return Identifier(value=full, children=[])
+            return StrVal(value=value)
+        
+        elif Parser.tokenizer.next.type == 'number':
+            value = Parser.tokenizer.next.value
+            Parser.tokenizer.selectNext()
+            return NumVal(value)
+        
         elif Parser.tokenizer.next.type == 'identifier':
             tree = Identifier(value=Parser.tokenizer.next.value, children=[])
             Parser.tokenizer.selectNext()
@@ -31,6 +46,7 @@ class Parser:
     
     @staticmethod
     def parseRelExpression():
+        print('chama parsefactor')
         left = Parser.parseFactor()
         if Parser.tokenizer.next.type in ['less_than', 'greater_than', 'less_equal', 'greater_equal', 'equals']:
             op = Parser.tokenizer.next.type
@@ -116,10 +132,14 @@ class Parser:
         print(f"next {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
         condition = Parser.parseRelExpression()
         print(f'encontrei a condition {condition}')
+        print(condition.children, condition.value)
         Parser.tokenizer.selectNext()  # skip 'então'
         print(f"next para entrar em then {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
         then_task = Parser.parseTask()
-        
+        print(f'voltei com a task next {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}')
+        Parser.tokenizer.selectNext() # break line
+        print(f"novo next é  {Parser.tokenizer.next.value} {Parser.tokenizer.next.type}")
+
         else_task = None
         if Parser.tokenizer.next.type == 'else':
             Parser.tokenizer.selectNext()
@@ -189,6 +209,10 @@ class Parser:
                 else:
                     print('quero adicionar task condicional')
                     tasks.append(Parser.parseConditionalTask())
+            
+            print(f'saindo do while com next {Parser.tokenizer.next.type} {Parser.tokenizer.next.value}')
+            Parser.tokenizer.selectNext()
+
             if Parser.tokenizer.next.type == 'tasks_added':
                 Parser.tokenizer.selectNext()
                 # consome quebra de linha após tarefas adicionadas
@@ -208,11 +232,8 @@ class Parser:
         elif Parser.tokenizer.next.type == 'break_line':
             Parser.tokenizer.selectNext()
             return NoOp(value=None, children=[])
-        
         # Se nada casou, erro de sintaxe
         raise Exception(f"Unexpected token at parseStatement: {Parser.tokenizer.next.type}")
-
-
 
     @staticmethod
     def run(code):
