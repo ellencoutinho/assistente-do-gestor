@@ -182,7 +182,8 @@ class Parser:
                 else:
                     tasks.append(Parser.parseConditionalTask())
             
-            Parser.tokenizer.selectNext()
+            while Parser.tokenizer.next.type == 'break_line':
+                Parser.tokenizer.selectNext()
 
             if Parser.tokenizer.next.type == 'tasks_added':
                 Parser.tokenizer.selectNext()
